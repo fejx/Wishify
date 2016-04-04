@@ -8,6 +8,14 @@ $(document).on('ready', function () {
 	tNowPl = Handlebars.compile($('#nowPlaying-template').html());
 	tTrackL = Handlebars.compile($('#track-template').html());
 	
+	$('#newTrackButton').click(function () {
+		$('#newTrackPane').fadeIn();
+	});
+	
+	$('#newTrackPane').click(function () {
+		$('#newTrackPane').fadeOut();
+	});
+	
 	socket = io();
 	
 	socket.on('connect', function () {
