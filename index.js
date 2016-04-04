@@ -19,23 +19,6 @@ var playing = false;
 var paused = false;
 var trackSleeper;
 
-var rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
-
-rl.on('line', (cmd) => {
-    if (cmd == "sepp")
-        spotify.pause(function (err, res) {
-            console.info("he des is komplett unintressant!!");
-            if (err)
-                console.error("failed pausing spotify: ", err);
-            process.exit();
-        });
-    else if (cmd == "spa�t")
-        playNextTrack();
-});
-
 function findTrackPos(trackId) {
     for (var i = 0; i < tracks.length; i++)
         if (tracks[i].data.id == trackId)
