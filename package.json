@@ -1,0 +1,19 @@
+{
+  "name": "Whishify",
+  "version": "1.0.0",
+  "description": "Server for Whishify Webapp",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "fej",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.14.2",
+    "express": "^4.13.3",
+    "node-spotify-webhelper": "0.0.4",
+    "node-stopwatch": "0.0.1",
+    "request": "^2.69.0",
+    "socket.io": "^1.4.5"
+  }
+}

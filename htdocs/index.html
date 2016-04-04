@@ -1,0 +1,30 @@
+<!doctype html>
+<!-- -->
+<html class="no-js">
+<head>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="script.js"></script>
+    <title>Wishify</title>
+    <link rel="stylesheet" type="text/css" href="normalize.css">
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <header>
+        <h1 class="fancy">Wishify</h1>
+    </header>
+    <main>
+        <span class="fancy">search tracks:</span><input id="searchField" type="search" />
+        <ul id="searchResults"></ul>
+        <ul id="trackList"></ul>
+    </main>
+    <footer>
+        <div id="nowPlaying"></div>
+        <img id="playPause" alt="play or pause" src="img/play.svg" />
+    </footer>
+    <span id="messageDisplay"></span>
+</body>
+</html>
