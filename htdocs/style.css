@@ -1,0 +1,214 @@
+.hidden {
+	display: none;
+}
+
+html {
+	font-family: 'Open Sans', Calibri, Tahoma, Geneva, Verdana, sans-serif;
+	background-color: #F3F3F3;
+	color: black;
+}
+
+.fancy {
+	font-family: 'Pacifico', cursive;
+}
+
+.no-js main, .no-js footer {
+	display: none;
+}
+
+header {
+	text-align: center;
+	position: absolute;
+	top: 33%;
+	left: 0;
+	right: 0;
+	padding-bottom: 5px;
+	height: 55px;
+}
+
+header + main {
+    margin-top: 60px;
+}
+
+@keyframes connectedHeader {
+	80% {
+		top: 0%;
+		background-color: transparent;
+		box-shadow: 0 0 0 0 transparent;
+		color: black;
+	}
+	100% {
+		background-color: rgb(92, 170, 0);
+		color: white;
+		top: 0%;
+		box-shadow: 0px 5px 20px 0px rgba(0,0,0,0.5);
+	}
+}
+
+.connected header {
+	animation-name: connectedHeader;
+	animation-duration: 1s;
+	animation-fill-mode: forwards;
+}
+
+header h1 {
+	margin: 0;
+}
+
+@keyframes showFooter {
+	0% {
+		bottom: -50px;
+	}
+	100% {
+		bottom: 0;
+	}
+}
+
+footer {
+    position: fixed;
+	bottom: -50px;
+    left: 0;
+    right: 0;
+	background-color:white;
+	color:black;
+	height: 50px;
+	box-shadow: 0px -5px 20px 0px rgba(0,0,0,0.5);
+}
+
+.loaded footer {
+	animation-name: showFooter;
+	animation-duration: 2s;
+	animation-fill-mode: forwards;
+}
+
+@keyframes showMain {
+	0% {
+		opacity: 0;
+		margin-bottom: 0;
+	}
+	100% {
+		opacity: 1;
+		margin-bottom: 50px;
+	}
+}
+
+main {
+	opacity: 0;
+}
+
+.loaded main {
+	animation-name: showMain;
+	animation-duration: 2s;
+	animation-fill-mode: forwards;
+}
+
+#nowPlaying {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	text-align: center;
+}
+
+#nowPlaying img {
+	float: left;
+	margin-right: 5px;
+	height: 50px;
+}
+
+.smaller {
+	font-size: 0.8em;
+	color: gray;
+}
+
+.nSmaller {
+	font-size: 1.2em;
+	color: black;
+}
+
+
+
+
+
+
+.voting > button {
+    background-color: transparent;
+    border-style: none;
+    padding: 0;
+	outline-style: none;
+}
+
+.voting > button > svg {
+    height: 45px;
+}
+
+.voting > button > svg.clicked .circle {
+	animation-name: voteUp;
+	animation-duration: 0.5s;
+	animation-direction: alternate;
+	animation-iteration-count: 2;
+}
+
+@keyframes voteUp {
+	from {
+		fill: transparent;
+	}
+	to {
+		fill: gray;
+	}
+}
+
+
+svg.rotate {
+    transform: scale(1,-1);
+}
+
+
+
+#tracklist {
+	width:100%;
+	margin:0;
+	padding:0;
+	list-style: none;
+	padding-top: 5px;
+}
+
+#tracklist li {
+    display:flex;
+	flex-wrap:nowrap;
+	justify-content:space-between;
+	align-items: center;
+	height:50px;
+	padding:0;
+	list-style:none;
+    border-bottom-style: solid;
+    border-width: 1px;
+}
+
+#tracklist li:last-child {
+    border-bottom-style: hidden
+}
+
+#tracklist > li > img {
+    width: 50px;
+}
+
+.metainfo {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;	
+	margin: 0 10px 0 10px;
+	width: 100%;
+}
+
+.voting {
+	min-width:110px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.voting svg {
+	float:left;
+	width:50px;
+	height:50px;
+}

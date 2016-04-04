@@ -9,13 +9,16 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="17.16815mm"
-   height="22.396429mm"
-   viewBox="0 0 60.832028 79.357426"
+   width="100"
+   height="100"
+   viewBox="0 0 99.999997 99.999997"
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="downvote.svg">
+   sodipodi:docname="downvote.svg"
+   inkscape:export-filename="C:\Users\Florian\Google Drive\Projects\Wishify\resources\updownvote.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -25,36 +28,20 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8"
-     inkscape:cx="87.933943"
-     inkscape:cy="7.153047"
+     inkscape:zoom="2"
+     inkscape:cx="-67.119563"
+     inkscape:cy="50.178871"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
-     showgrid="true"
+     inkscape:current-layer="layer3"
+     showgrid="false"
      showguides="true"
      inkscape:guide-bbox="true"
-     objecttolerance="10000"
-     guidetolerance="10000"
-     inkscape:snap-perpendicular="true"
-     inkscape:snap-tangential="true"
-     inkscape:snap-path-mask="true"
-     inkscape:snap-path-clip="true"
-     inkscape:window-width="1280"
-     inkscape:window-height="666"
+     units="px"
+     inkscape:window-width="1217"
+     inkscape:window-height="697"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
-     inkscape:window-maximized="1"
-     fit-margin-top="0"
-     fit-margin-left="0"
-     fit-margin-right="0"
-     fit-margin-bottom="0">
-    <inkscape:grid
-       type="xygrid"
-       id="grid3350"
-       snapvisiblegridlinesonly="true"
-       originx="-225.35407"
-       originy="-940.9557" />
-  </sodipodi:namedview>
+     inkscape:window-maximized="1" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -68,14 +55,39 @@
     </rdf:RDF>
   </metadata>
   <g
-     inkscape:label="Ebene 1"
+     inkscape:label="circle"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-225.35407,-32.049007)">
+     transform="translate(0,-952.36223)">
+    <ellipse
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:2.21121845;stroke-opacity:1"
+       id="path4154"
+       cx="50"
+       cy="1002.3622"
+       rx="47.809471"
+       ry="47.809475" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="up"
+     style="display:none">
     <path
-       style="fill:#000000;fill-rule:evenodd;stroke:none;stroke-width:0.6896807px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 256.00453,111.40636 15.0918,-22.625003 15.08984,-22.625 -15.59961,0.0606 0,-34.16798 -29.19922,0 0,34.2793 -16.03319,0.0606 15.32616,22.50976 15.32422,22.507823 z"
-       id="rect3354"
+       transform="translate(0,-952.36223)"
+       id="path4158"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.21121836;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 50,967.36223 0,69.99997 m -25,-44.99997 25,-25 25,25"
+       inkscape:connector-curvature="0" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="down"
+     style="display:inline">
+    <path
+       d="m 50,83.436403 0,-69.99997 m -25,44.99997 25,25 25,-25"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.21121836;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       id="path4220"
        inkscape:connector-curvature="0" />
   </g>
 </svg>
