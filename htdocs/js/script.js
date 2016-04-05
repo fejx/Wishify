@@ -12,9 +12,37 @@ $(document).on('ready', function () {
 		$('#newTrackPane').transition({y:'0'}, 500, 'snap');
 	});
 	
-	$('#newTrackPane').click(function () {
-		$('#newTrackPane').transition({y:'100%'});
+	$('#newTrackPane').click(function (e) {
+		if (e.target.id == 'newTrackPane') {
+			$('#newTrackPane').transition({y:'100%'});
+			$("#newTrackPane input").val("");
+			$("#newTrackPane ul").empty();
+			$('#newTrackPane svg').hide();
+		}
 	});
+	
+	$("#newTrackPane input").keypress(function (e) {
+        if (e.which == 13 && $("#newTrackPane input").val() != "") {
+			$('#newTrackPane svg').show();
+            $.get("https://api.spotify.com/v1/search?q=" + $("#newTrackPane input").val() + "&type=track", function (results) {
+                $('#newTrackPane svg').hide();
+				$("#newTrackPane ul").empty();
+                $("#newTrackPane ul").show();
+                results.tracks.items.forEach(function (t) {
+                    var entry = $("<li />");
+                    entry.html(t.artists[0].name + " - " + t.name);
+                    entry.click(function () {
+                        socket.emit("add track", t.id);
+                        $('#newTrackPane').transition({y:'100%'});
+                        $("#newTrackPane input").val("");
+						$("#newTrackPane ul").empty();
+                    });
+                    $("#newTrackPane ul").append(entry);
+                });
+
+            });
+        }
+    });
 	
 	socket = io();
 	
