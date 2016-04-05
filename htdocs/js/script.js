@@ -9,11 +9,11 @@ $(document).on('ready', function () {
 	tTrackL = Handlebars.compile($('#track-template').html());
 	
 	$('#newTrackButton').click(function () {
-		$('#newTrackPane').fadeIn();
+		$('#newTrackPane').transition({y:'0'}, 500, 'snap');
 	});
 	
 	$('#newTrackPane').click(function () {
-		$('#newTrackPane').fadeOut();
+		$('#newTrackPane').transition({y:'100%'});
 	});
 	
 	socket = io();

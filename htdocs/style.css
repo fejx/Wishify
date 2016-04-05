@@ -82,7 +82,7 @@ footer {
 }
 
 @keyframes showMain {
-	0% {
+	10% {
 		opacity: 0;
 		margin-bottom: 0;
 	}
@@ -240,6 +240,7 @@ svg.rotate {
     bottom: 0;
     left: 0;
     right: 0;
+	transform: translate(0, 100%);
 }
 
 #newTrackPane div {
@@ -249,9 +250,8 @@ svg.rotate {
     left: 10%;
     right: 10%;
     bottom: 70px;
-}
-
-#newTrackPane div {
     padding: 10px;
     border-radius: 5px;
+	box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.24);
 }
+
