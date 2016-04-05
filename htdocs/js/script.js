@@ -4,12 +4,36 @@ $('html').addClass('js');
 var tNowPl;
 var tTrackL;
 
+function addTrack (track) {
+	// create html
+	var artistString = '';
+	track.artists.forEach(function (artist) {
+		if (artistString)
+			artistString += ', ' + artist.name;
+		else
+			artistString = artist.name;
+	});
+	
+	var code = tTrackL({
+			title: track.name,
+			album: track.album.name,
+			artists: artistString,
+			albumArtUrl: track.album.images[1].url,
+			score: track.score,
+			id: track.id
+		});
+	
+	// append to list
+	$('#tracklist').append(code);
+}
+
 $(document).on('ready', function () {
 	tNowPl = Handlebars.compile($('#nowPlaying-template').html());
 	tTrackL = Handlebars.compile($('#track-template').html());
 	
 	$('#newTrackButton').click(function () {
 		$('#newTrackPane').transition({y:'0'}, 500, 'snap');
+		$('#newTrackPane input').focus();
 	});
 	
 	$('#newTrackPane').click(function (e) {
@@ -57,22 +81,15 @@ $(document).on('ready', function () {
 			score: 5
 		}));
 		
-		$('#tracklist').append(tTrackL({
-			title: '7 Yearkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkks',
-			album: 'Lukas Graham (Blue Album)',
-			artists: 'Lukas Grahakkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk',
-			albumArtUrl: 'https://i.scdn.co/image/acc5f51a18dd57a43a44ecb94144fa65aca0b8a7',
-			score: 5
-		}));
+		socket.on("track added", function (t) {
+        	addTrack(t);
+    	});
 		
-		for (var i = 0; i < 10; ++i)
-		$('#tracklist').append(tTrackL({
-			title: '7 Years',
-			album: 'Lukas Graham (Blue Album)',
-			artists: 'Lukas Graham',
-			albumArtUrl: 'https://i.scdn.co/image/acc5f51a18dd57a43a44ecb94144fa65aca0b8a7',
-			score: 5
-		}));
+		socket.on("tracks", function (tracklist) {
+			tracklist.forEach(function (track) {
+				addTrack(track);
+			});
+		})
 		
 		$('.voting > button > svg').click(function (e) {
 			$(e.target).addClass('clicked');
