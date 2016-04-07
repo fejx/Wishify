@@ -21,7 +21,7 @@
 			<span class="artists smaller">{{artists}}</span>
 		</script>
 		<script id="track-template" type="text/x-handlebars-template">
-			<li>
+			<li id="{{id}}">
 				<img src="{{albumArtUrl}}">
 				<div class="metainfo smaller">
 					<span class="title nSmaller">{{title}}</span><br>
@@ -32,7 +32,7 @@
 				</div>
 				<div class="voting">
 					
-					<button>
+					<button class="upvote">
 						<svg viewBox="0 0 100 100" stroke="#000"
 						fill="none" stroke-width="2">
 							<ellipse class="circle" ry="49" rx="49" cy="50" cx="50"/>
@@ -40,7 +40,7 @@
 						</svg>
 					</button>
 					<span class="score">{{score}}</span>
-					<button>
+					<button class="downvote">
 						<svg viewBox="0 0 100 100" stroke="#000"
 						fill="none" stroke-width="2" class="rotate">
 							<ellipse class="circle" ry="49" rx="49" cy="50" cx="50"/>
