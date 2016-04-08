@@ -17,6 +17,7 @@ var current = null;
 
 var playing = false;
 var paused = false;
+var waitingForTrack = true;
 var trackSleeper;
 
 function findTrackPos(trackId) {
@@ -187,7 +188,10 @@ io.on("connection", function (socket) {
 							if (!findTrack(msg)) { // check if track was added in the meantime
 								var track = { data: JSON.parse(body), upvotes: [], downvotes: [], owner: socket.id };
 								tracks.push(track);
-								io.emit("track added", getSendableTrack(track));
+								if (!playing && waitingForTrack) // player is waiting for tracks, immediately start playing
+									playNextTrack();
+								else
+									io.emit("track added", getSendableTrack(track));
 							}
 						}
 					}.bind(this)

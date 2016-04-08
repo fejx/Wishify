@@ -93,7 +93,7 @@ function updateTrackScore (track) {
 function setCurrentPlaying (track) {
 	if (track) {
 		// remove track from tracklist
-		$('#tracklist li.' + track.id).remove();
+		$('#tracklist li#' + track.id).remove();
 
 		var artistString = '';
 		track.artists.forEach(function (artist) {
@@ -104,7 +104,7 @@ function setCurrentPlaying (track) {
 		});
 
 		$('#nowPlaying').html(tNowPl({
-			title: track.title,
+			title: track.name,
 			album: track.album.name,
 			artists: artistString,
 			albumArtUrl: track.album.images[1].url,
@@ -179,9 +179,9 @@ $(document).on('ready', function () {
 			updateTrackScore(track)
 		});
 
-		socket.on('now playing'), function (track) {
+		socket.on('now playing', function (track) {
 			setCurrentPlaying(track);
-		};
+		});
 		
 		$('.voting > button > svg').click(function (e) {
 			$(e.target).addClass('clicked');
