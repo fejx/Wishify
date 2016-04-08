@@ -1,6 +1,8 @@
 $('html').removeClass('no-js');
 $('html').addClass('js');
 
+var socket = io();
+
 // contains score values of all tracks in the order they appear in #tracklist
 var scores = [];
 
@@ -63,7 +65,7 @@ function insertTrackAt (trackElement, score, index)  {
 		// insert into tracklist after the element above it
 		$('#tracklist li:eq(' + (index - 1).toString() + ')').after(trackElement);
 		// insert into score list
-		// TODO: Test if this actual works
+		// TODO: Test if this actually works
 		scores.splice(index, 0, score);
 	}
 }
@@ -77,15 +79,40 @@ function moveTrackTo (from, to) {
 }
 
 // Updates the score of the track (object)
-function updateTrackScore (track, newScore) {
+function updateTrackScore (track) {
 	// update score value
 	var element = $('#tracklist li#' + track.id);
-	element.find('.score').html(newScore);
+	element.find('.score').html(track.score);
 	
 	// TODO: move track if needed
 	
 	// check if track needs to be moved
 	
+}
+
+function setCurrentPlaying (track) {
+	if (track) {
+		// remove track from tracklist
+		$('#tracklist li.' + track.id).remove();
+
+		var artistString = '';
+		track.artists.forEach(function (artist) {
+			if (artistString)
+				artistString += ', ' + artist.name;
+			else
+				artistString = artist.name;
+		});
+
+		$('#nowPlaying').html(tNowPl({
+			title: track.title,
+			album: track.album.name,
+			artists: artistString,
+			albumArtUrl: track.album.images[1].url,
+			score: track.score
+		}));
+	} else { // input track is null or undefined
+		$('#nowPlaying').html(''); // clear now playing info
+	}
 }
 
 $(document).on('ready', function () {
@@ -134,31 +161,32 @@ $(document).on('ready', function () {
 	socket.on('connect', function () {
 		$('html').addClass('connected');
 		
-		$('#nowPlaying').html(tNowPl({
-			title: '7 Yearskkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk',
-			album: 'Lukas Graham (Blue Album)',
-			artists: 'Lukas Graham',
-			albumArtUrl: 'https://i.scdn.co/image/acc5f51a18dd57a43a44ecb94144fa65aca0b8a7',
-			score: 5
-		}));
-		
-		socket.on("track added", function (t) {
+		// event triggered when a track gets added by a user
+		socket.on('track added', function (t) {
         	addTrack(t);
-    	});
+		});
 		
-		socket.on("tracks", function (tracklist) {
+		// event triggered on connecting containing all current tracks on the server
+		socket.on('tracks', function (tracklist) {
 			tracklist.forEach(function (track) {
 				addTrack(track);
 			});
 			$(tracklist[0]).hide();
-		})
+		});
 		
 		// TODO: get upvote/downvote and update events
+		socket.on('track change', function (track) {
+			updateTrackScore(track)
+		});
+
+		socket.on('now playing'), function (track) {
+			setCurrentPlaying(track);
+		};
 		
 		$('.voting > button > svg').click(function (e) {
 			$(e.target).addClass('clicked');
 			
-		})
+		});
 		
 		setTimeout(function () {
 			$('html').addClass('loaded');
