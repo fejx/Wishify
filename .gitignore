@@ -44,4 +44,8 @@ Temporary Items
 
 node_modules
 .vscode
+<<<<<<< HEAD
 .idea
+=======
+.idea
+>>>>>>> origin/master
