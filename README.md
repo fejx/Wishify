@@ -2,7 +2,7 @@
 Wishify is a Spotify-Powered playlist where users can vote for the next song to play and add their own ones.
 
 ## Screenshot
-![Wishify Screenshot](http://imgur.com/YwOSJfa)
+![Wishify Screenshot](hhttps://raw.githubusercontent.com/XXLJack/Wishify/master/wishify.PNG)
 
 ## Requirements
 Spotify and npm are required. This project was developed only using a Spotify Premium account, using Free probably causes Problems because of the advertisements.
