@@ -4,7 +4,7 @@
   "description": "Server for Wishify Webapp",
   "main": "index.js",
   "scripts": {
-    "run": "node index.js"
+    "start": "node index.js"
   },
   "author": "fej",
   "license": "ISC",

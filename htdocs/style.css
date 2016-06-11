@@ -75,7 +75,7 @@ footer {
 	box-shadow: 0px -5px 20px 0px rgba(0,0,0,0.5);
 }
 
-.loaded footer {
+.connected footer {
 	animation-name: showFooter;
 	animation-duration: 2s;
 	animation-fill-mode: forwards;
@@ -195,7 +195,7 @@ svg.rotate {
 .metainfo {
 	white-space: nowrap;
 	text-overflow: ellipsis;
-	overflow: hidden;	
+	overflow: hidden;
 	margin: 0 10px 0 10px;
 	width: 100%;
 }
