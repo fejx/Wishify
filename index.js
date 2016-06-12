@@ -33,7 +33,7 @@ function findTrack(trackId) {
 
 	return (p == -1 ? undefined : tracks[p]);
 }
-	
+
 function arrayFind(array, element) {
 	for (var i = 0; i < array.length; i++)
 		if (array[i] === element)
@@ -42,7 +42,8 @@ function arrayFind(array, element) {
 }
 
 function getSendableTrack(track) {
-	if (!track) return null;
+	if (!track)
+		return null;
 	var newTrack = JSON.parse(JSON.stringify(track.data));
 	newTrack.score = track.upvotes.length - track.downvotes.length;
 	newTrack.owner = track.owner;
@@ -55,7 +56,7 @@ function getBestRatedTrackIndex() {
 
 	var getScore = function (track) {
 		return track.upvotes.length - track.downvotes.length;
-	}
+	};
 
 	var maxScore = getScore(tracks[0]);
 	var highestTrackPos = 0;
@@ -106,11 +107,10 @@ function playNextTrack() {
 				trackSleeper = setTimeout(function () {
 					playNextTrack();
 				}, track.data.duration_ms);
-				io.emit("now playing", getSendableTrack(track));
+				io.emit('now playing', getSendableTrack(track));
 				current = track;
 				tracks.splice(idx, 1);
 				playing = true;
-				
 			}
 		});
 	} else {
@@ -137,7 +137,6 @@ app.use(function (req, res, next) {
 
 io.on("connection", function (socket) {
 	console.info(socket.id + " joined");
-
 	users.push(socket.id);
 
 	// send own id
@@ -148,11 +147,12 @@ io.on("connection", function (socket) {
 	tracks.forEach(function (t) {
 		tracklist.push(getSendableTrack(t));
 	});
-	socket.emit("tracks", tracklist);
-	io.emit("now playing", getSendableTrack(current));
-	
-	socket.on("disconnect", function () {
-		console.info(socket.id + " left");
+	socket.emit('tracks', tracklist);
+	socket.emit('now playing', getSendableTrack(current));
+
+
+	socket.on('disconnect', function () {
+		console.info(socket.id + ' left');
 
 		// remove all votes from this client
 		tracks.forEach(function (track) {
@@ -161,14 +161,14 @@ io.on("connection", function (socket) {
 			if (up != -1) track.upvotes.splice(up, 1);
 			if (down != -1) track.downvotes.splice(down, 1);
 			if (up != -1 || down != -1)
-				io.emit("track change", getSendableTrack(track));
+				io.emit('track change', getSendableTrack(track))
 		});
 
 		// remove user from list
-		users.splice(arrayFind(users, socket.id), 1);
+		users.splice(arrayFind(users, socket.id), 1)
 	});
 
-	socket.on("add track", function (msg) {
+	socket.on('add track', function (msg) {
 		if (typeof (msg) != "string")
 			socket.emit("failed", "invalid add track message");
 		else if (!msg.match("[0-9A-z]{22}"))
@@ -188,8 +188,10 @@ io.on("connection", function (socket) {
 							if (!findTrack(msg)) { // check if track was added in the meantime
 								var track = { data: JSON.parse(body), upvotes: [], downvotes: [], owner: socket.id };
 								tracks.push(track);
-								if (!playing && waitingForTrack) // player is waiting for tracks, immediately start playing
+								if (!playing && waitingForTrack) { // player is waiting for tracks, immediately start playing
 									playNextTrack();
+									console.log('play now');
+								}
 								else
 									io.emit("track added", getSendableTrack(track));
 							}
@@ -225,7 +227,7 @@ io.on("connection", function (socket) {
 		else {
 			msg = htmlEscape(msg);
 			var track = findTrack(msg);
-			
+
 			if (!track)
 				socket.emit("failed", "track not found");
 			else {
@@ -234,7 +236,7 @@ io.on("connection", function (socket) {
 					socket.emit("failed", "you already upvoted this track");
 				else {
 					// remove downvote if user has downvoted
-					var pos = arrayFind(track.downvotes, socket.id)
+					var pos = arrayFind(track.downvotes, socket.id);
 					if (pos != -1)
 						track.downvotes.splice(pos, 1);
 
@@ -263,7 +265,7 @@ io.on("connection", function (socket) {
 					socket.emit("failed", "you already downvoted this track");
 				else {
 					// remove upvote if user has upvoted
-					var pos = arrayFind(track.upvotes, socket.id)
+					var pos = arrayFind(track.upvotes, socket.id);
 					if (pos != -1)
 						track.upvotes.splice(pos, 1);
 
@@ -280,7 +282,7 @@ io.on("connection", function (socket) {
 	socket.on("play", function () {
 		if (paused || !playing) {
 			if (tracks.length == 0)
-				socket.emit("error", "playlist is empty")
+				socket.emit("error", "playlist is empty");
 			else
 				playNextTrack();
 		}

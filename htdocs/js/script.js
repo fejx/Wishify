@@ -1,9 +1,12 @@
+'use strict';
+
 var html = $('html');
 html.removeClass('no-js');
 html.addClass('js');
 
 const SEARCH_URL =
 	'https://api.spotify.com/v1/search?q=[QUERY]&type=track';
+const LOG_ENABLED = false;
 
 var socket = io();
 var tracklist;
@@ -49,9 +52,14 @@ var Vue = new Vue({
 });
 
 function findTrackId (track) {
-	for (var i = 0; i < Vue.tracks.length; i++)
+	var i = 0;
+	for (; i < Vue.tracks.length; i++)
 		if (Vue.tracks[i].id == track.id)
-			return i
+			break;
+	if (i < Vue.tracks.length)
+		return i;
+	else
+		return undefined;
 }
 
 function hideAddTrackPane () {
@@ -85,23 +93,26 @@ function setCurrentPlaying (track) {
 
 	// track might be null if no song is playing
 	if (track) {
-		Vue.tracks.splice(findTrackId(track), 1);
-		nowPlaying.removeClass('hide').addClass('show')
+		var ind = findTrackId(track);
+		if (ind != undefined)
+			Vue.tracks.splice(findTrackId(track), 1)
 	}
-	else
-		nowPlaying.removeClass('show').addClass('hide')
 }
 
 function sEmit (event, message) {
 	socket.emit(event, message);
-	console.log(event, message)
+	if (LOG_ENABLED)
+		console.log('--> ', event, message)
 }
 
 function sOn (event, callback) {
-	socket.on(event, function (message) {
-		callback(message);
-		console.log(event, message)
-	});
+	if (LOG_ENABLED)
+		socket.on(event, function (message) {
+			callback(message);
+			console.log('<-- ', event, message)
+		});
+	else
+		socket.on(event, callback)
 }
 
 $(document).on('ready', function () {
@@ -121,8 +132,7 @@ $(document).on('ready', function () {
 
 		// event triggered when a track gets added by a user
 		sOn('track added', function (t) {
-        	addTrack(t);
-			console.log('add', t)
+        	addTrack(t)
 		});
 
 		// event triggered on connecting containing all current tracks on the server
@@ -130,25 +140,21 @@ $(document).on('ready', function () {
 			tracklist.forEach(function (track) {
 				addTrack(track)
 			});
-			console.log('tracks', tracklist)
 		});
 
 		sOn('track change', function (track) {
-			updateTrackScore(track);
-			console.log('update', track)
+			updateTrackScore(track)
 		});
 
 		sOn('now playing', function (track) {
-			setCurrentPlaying(track);
-			console.log('now playing', track)
+			setCurrentPlaying(track)
 		});
 
 		$('.voting > button > svg').click(function (e) {
-			$(e.target).addClass('clicked');
-
+			$(e.target).addClass('clicked')
 		});
 
-		html.addClass('loaded');
+		html.addClass('loaded')
 	});
 
 });
