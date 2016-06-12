@@ -30,7 +30,7 @@
 <main>
 	<ol id="tracklist">
 		<li v-for="track in tracks" id="{{track.id}}">
-			<img src="{{track.album.images[1].url}}">
+			<img v-bind:src="track.album.images[1].url">
 			<div class="metainfo smaller">
 				<span class="title nSmaller">{{track.name}}</span><br>
 					<span>
@@ -69,7 +69,7 @@
 
 	<button id="newTrackButton" v-on:click="openAddDialog">
 		<svg>
-			<image xlink:href="img/ic_add_white_48px.svg"/>
+			<image xlink:href="img/ic_add_white_48px.svg" width="35" height="45"/>
 		</svg>
 	</button>
 	<div id="newTrackPane">
