@@ -193,10 +193,8 @@ io.on('connection', function (socket) {
 									owner: socket.id
 								};
 								tracks.push(track);
-								if (!playing && waitingForTrack) { // player is waiting for tracks, immediately start playing
+								if (!playing && waitingForTrack) // player is waiting for tracks, immediately start playing
 									playNextTrack();
-									console.log('play now');
-								}
 								else
 									io.emit('track added', getSendableTrack(track))
 							}

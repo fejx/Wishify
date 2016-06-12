@@ -6,7 +6,7 @@ html.addClass('js');
 
 const SEARCH_URL =
 	'https://api.spotify.com/v1/search?q=[QUERY]&type=track';
-const LOG_ENABLED = false;
+const LOG_ENABLED = true;
 
 var socket = io();
 var tracklist;
@@ -72,8 +72,16 @@ function hideAddTrackPane () {
 
 // adds track (object) to the tracklist
 function addTrack (track) {
-	Vue.tracks.push(track);
-	sortTracks()
+	if (findTrackId(track))
+		console.warn('Tried to add track ', track, ' multiple times');
+	else {
+		track.toString = function () {
+			return this.name + ' - ' + this.artists[0].name;
+		};
+
+		Vue.tracks.push(track);
+		sortTracks()
+	}
 }
 
 // Updates the score of the track (object)

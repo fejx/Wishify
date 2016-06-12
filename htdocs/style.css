@@ -32,7 +32,7 @@ header + main {
 
 @keyframes connectedHeader {
 	80% {
-		top: 0%;
+		top: 0;
 		background-color: transparent;
 		box-shadow: 0 0 0 0 transparent;
 		color: black;
@@ -40,8 +40,8 @@ header + main {
 	100% {
 		background-color: rgb(92, 170, 0);
 		color: white;
-		top: 0%;
-		box-shadow: 0px 5px 20px 0px rgba(0,0,0,0.5);
+		top: 0;
+		box-shadow: 0 5px 20px 0 rgba(0,0,0,0.5);
 	}
 }
 
@@ -72,7 +72,7 @@ footer {
 	background-color:white;
 	color:black;
 	height: 50px;
-	box-shadow: 0px -5px 20px 0px rgba(0,0,0,0.5);
+	box-shadow: 0 -5px 20px 0 rgba(0,0,0,0.5);
 }
 
 .connected footer {
@@ -167,9 +167,8 @@ svg.rotate {
 #tracklist {
 	width:100%;
 	margin:0;
-	padding:0;
 	list-style: none;
-	padding-top: 5px;
+	padding: 5px 0 0;
 }
 
 #tracklist li {
@@ -262,7 +261,7 @@ svg.rotate {
 	outline-style: none;
 	border-style: none;
 	padding: 5px;
-	box-shadow: 0px 7px 35px -12px rgba(0,0,0,0.75);
+	box-shadow: 0 7px 35px -12px rgba(0,0,0,0.75);
 }
 
 #newTrackPane svg {
@@ -273,7 +272,7 @@ svg.rotate {
 #newTrackPane ul {
     list-style: none;
     margin: 10px;
-    padding: 0px;
+    padding: 0;
 }
 
 #newTrackPane ul > li {
@@ -335,4 +334,12 @@ svg.rotate {
 		stroke-dashoffset: 187;
 		transform: rotate(450deg);
 	}
+}
+
+.artists > span:after {
+	content: ',';
+}
+
+.artists > span:last-child:after {
+	content: '';
 }
