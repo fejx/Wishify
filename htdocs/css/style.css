@@ -4,7 +4,7 @@
 
 html {
 	font-family: 'Open Sans', Calibri, Tahoma, Geneva, Verdana, sans-serif;
-	background-color: #F3F3F3;
+	background-color: #f3f3f3;
 	color: black;
 }
 
@@ -27,7 +27,7 @@ header {
 }
 
 header + main {
-	margin-top: 60px;
+	margin-top: 58px;
 }
 
 @keyframes connectedHeader {
@@ -41,7 +41,7 @@ header + main {
 		background-color: rgb(92, 170, 0);
 		color: white;
 		top: 0;
-		box-shadow: 0 5px 20px 0 rgba(0,0,0,0.5);
+		box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.5);
 	}
 }
 
@@ -69,10 +69,10 @@ footer {
 	bottom: -50px;
 	left: 0;
 	right: 0;
-	background-color:white;
-	color:black;
+	background-color: white;
+	color: black;
 	height: 50px;
-	box-shadow: 0 -5px 20px 0 rgba(0,0,0,0.5);
+	box-shadow: 0 -5px 20px 0 rgba(0, 0, 0, 0.5);
 }
 
 .connected footer {
@@ -125,11 +125,6 @@ main {
 	color: black;
 }
 
-
-
-
-
-
 .voting > button {
 	background-color: transparent;
 	border-style: none;
@@ -157,28 +152,25 @@ main {
 	}
 }
 
-
 svg.rotate {
-	transform: scale(1,-1);
+	transform: scale(1, -1);
 }
 
-
-
 #tracklist {
-	width:100%;
-	margin:0;
+	width: 100%;
+	margin: 0;
 	list-style: none;
 	padding: 5px 0 0;
 }
 
 #tracklist li {
-	display:flex;
-	flex-wrap:nowrap;
-	justify-content:space-between;
+	display: flex;
+	flex-wrap: nowrap;
+	justify-content: space-between;
 	align-items: center;
-	height:50px;
-	padding:0;
-	list-style:none;
+	height: 50px;
+	padding: 0;
+	list-style: none;
 	border-bottom-style: solid;
 	border-width: 1px;
 }
@@ -206,9 +198,9 @@ svg.rotate {
 }
 
 .voting svg {
-	float:left;
-	width:50px;
-	height:50px;
+	float: left;
+	width: 50px;
+	height: 50px;
 }
 
 #newTrackButton {
@@ -219,11 +211,11 @@ svg.rotate {
 	width: 50px;
 	line-height: 20px;
 	border-radius: 50%;
-	background-color: #F44336;
+	background-color: #f44336;
 	font-size: 2em;
 	color: white;
 	border-color: transparent;
-	box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
+	box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
 	outline-style: none;
 }
 
@@ -238,7 +230,6 @@ svg.rotate {
 	bottom: 0;
 	left: 0;
 	right: 0;
-	transform: translate(0, 100%);
 }
 
 #newTrackPane div {
@@ -261,27 +252,27 @@ svg.rotate {
 	outline-style: none;
 	border-style: none;
 	padding: 5px;
-	box-shadow: 0 7px 35px -12px rgba(0,0,0,0.75);
+	box-shadow: 0 7px 35px -12px rgba(0, 0, 0, 0.75);
 }
 
 #newTrackPane svg {
-		margin-left: calc(50% - 33px);
-		margin-top: 10px;
+	margin-left: calc(50% - 33px);
+	margin-top: 10px;
 }
 
 #newTrackPane ul {
-    list-style: none;
-    margin: 10px;
-    padding: 0;
+	list-style: none;
+	margin: 10px;
+	padding: 0;
 }
 
 #newTrackPane ul > li {
-    padding: 5px;
-    margin: 2px;
-    cursor: pointer;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+	padding: 5px;
+	margin: 2px;
+	cursor: pointer;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
 /* stolen from http://codepen.io/mrrocks/pen/EiplA */
@@ -297,6 +288,7 @@ svg.rotate {
 		transform: rotate(270deg);
 	}
 }
+
 .path {
 	stroke-dasharray: 187;
 	stroke-dashoffset: 0;
@@ -306,19 +298,19 @@ svg.rotate {
 
 @keyframes colors {
 	0% {
-		stroke: #4285F4;
+		stroke: #4285f4;
 	}
 	25% {
-		stroke: #DE3E35;
+		stroke: #de3e35;
 	}
 	50% {
-		stroke: #F7C223;
+		stroke: #f7c223;
 	}
 	75% {
-		stroke: #1B9A59;
+		stroke: #1b9a59;
 	}
 	100% {
-		stroke: #4285F4;
+		stroke: #4285f4;
 	}
 }
 
@@ -343,3 +335,18 @@ svg.rotate {
 .artists > span:last-child:after {
 	content: '';
 }
+
+#no-tracks {
+	display: none;
+}
+
+.connected #no-tracks {
+	display: block;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	padding-top: 10px;
+	overflow: auto;
+	position: fixed;
+}
+

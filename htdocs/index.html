@@ -4,19 +4,19 @@
 <head>
 	<title>Wishify</title>
 
-	<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
-	<!--suppress HtmlUnknownTarget -->
-	<script src="/socket.io/socket.io.js"></script>
-	<script src="js/jquery.transit.min.js"></script>
-	<script src="js/vue.js"></script>
+	<script src="http://code.jquery.com/jquery-1.11.1.js" defer></script>
+	<script src="/socket.io/socket.io.js" defer></script>
+	<script src="js/vue.js" defer></script>
+	<script src="js/script.js" defer></script>
 
 	<link href='https://fonts.googleapis.com/css?family=Pacifico'
 	      rel='stylesheet' type='text/css'>
 	<link href='https://fonts.googleapis.com/css?family=Open+Sans'
 	      rel='stylesheet' type='text/css'>
 
-	<link rel="stylesheet" type="text/css" href="normalize.css">
-	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" type="text/css" href="css/normalize.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link rel="stylesheet" type="text/css" href="css/animate.css">
 
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
@@ -24,12 +24,13 @@
 <body>
 <header>
 	<h1 class="fancy">Wishify</h1>
-	<noscript>This page does not work without Javascript!</noscript>
+	<noscript>Please enable javascript and reload.</noscript>
 </header>
 
 <main>
-	<ol id="tracklist">
-		<li v-for="track in tracks" id="{{track.id}}">
+	<ol id="tracklist" v-show="tracks.length">
+		<li v-for="track in tracks" id="{{track.id}}" transition="zoom"
+		    class="animated">
 			<img v-bind:src="track.album.images[1].url">
 			<div class="metainfo smaller">
 				<span class="title nSmaller">{{track.name}}</span><br>
@@ -43,7 +44,6 @@
 					</span>
 			</div>
 			<div class="voting">
-
 				<button class="upvote" v-on:click="voteUp(track.id)">
 					<svg viewBox="0 0 100 100" stroke="#000"
 					     fill="none" stroke-width="2">
@@ -66,13 +66,19 @@
 			</div>
 		</li>
 	</ol>
+	<span v-else id="no-tracks" class="animated" transition="fadeV"
+	      @click="attractNewTrackButton">
+		No tracks left :( Try to add a new one!
+	</span>
 
-	<button id="newTrackButton" v-on:click="openAddDialog">
+	<button id="newTrackButton" @click="openAddDialog" class="animated">
 		<svg>
-			<image xlink:href="img/ic_add_white_48px.svg" width="35" height="45"/>
+			<image xlink:href="img/ic_add_white_48px.svg"
+			       width="35" height="45"/>
 		</svg>
 	</button>
-	<div id="newTrackPane">
+	<div id="newTrackPane" v-show="showSearchDialog" transition="zoomV"
+	class="animated">
 		<div>
 			<input type="search" placeholder="search track"
 			       v-on:keyup.13="searchTrack"/>
@@ -94,7 +100,8 @@
 </main>
 
 <footer>
-	<div id="nowPlaying">
+	<div id="nowPlaying" v-if="currentTrack" transition="slideH"
+	     class="animated">
 		<span class="title">{{currentTrack.name}}</span><br>
 		<span class="artists smaller">
 			<span v-for="artist in currentTrack.artists">
@@ -104,6 +111,5 @@
 	</div>
 </footer>
 
-<script src="js/script.js"></script>
 </body>
 </html>

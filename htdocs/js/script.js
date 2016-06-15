@@ -10,9 +10,35 @@ const LOG_ENABLED = true;
 
 var socket = io();
 var tracklist;
+var newTrackButton;
 var newTrackPane;
 var newTrackInput;
 var nowPlaying;
+
+Vue.transition('slideV', {
+	enterClass: 'bounceInUp',
+	leaveClass: 'bounceOutDown'
+});
+
+Vue.transition('zoomV', {
+	enterClass: 'zoomInUp',
+	leaveClass: 'zoomOutDown'
+});
+
+Vue.transition('fadeV', {
+	enterClass: 'fadeInUp',
+	leaveClass: 'fadeOutDown'
+});
+
+Vue.transition('slideH', {
+	enterClass: 'slideInLeft',
+	leaveClass: 'slideOutRight'
+});
+
+Vue.transition('zoom', {
+	enterClass: 'zoomIn',
+	leaveClass: 'zoomOut'
+});
 
 //noinspection JSUnusedAssignment,JSUnusedGlobalSymbols
 var Vue = new Vue({
@@ -20,6 +46,7 @@ var Vue = new Vue({
 	data: {
 		tracks: [],
 		currentTrack: {},
+		showSearchDialog: false,
 		searching: false,
 		searchResults: []
 	},
@@ -31,13 +58,22 @@ var Vue = new Vue({
 			sEmit('vote down', id)
 		},
 		openAddDialog: function () {
-			newTrackPane.transition({y:'0'}, 500, 'snap');
-			newTrackInput.focus()
+			// clear previous entries
+			newTrackInput.val('');
+			Vue.searchResults = null;
+
+			// show dialog
+			this.showSearchDialog = true;
+
+			// focus on input (timeout because of weird bug)
+			setTimeout(function() {
+				newTrackInput.focus()
+			});
 		},
 		searchTrack: function () {
 			if (newTrackInput.val() == '')
 				return;
-			Vue.searching = true;
+			this.searching = true;
 			$.get(SEARCH_URL.replace('[QUERY]', newTrackInput.val()),
 				function (results) {
 				Vue.searching = false;
@@ -46,11 +82,18 @@ var Vue = new Vue({
 		},
 		addTrack: function (id) {
 			sEmit('add track', id);
-			hideAddTrackPane()
+			this.showSearchDialog = false;
+		},
+		attractNewTrackButton: function () {
+			newTrackButton.addClass('bounce');
+			setTimeout (function () {
+				newTrackButton.removeClass('bounce');
+			}, 1000);
 		}
 	}
 });
 
+// returns position of track in the list
 function findTrackId (track) {
 	var i = 0;
 	for (; i < Vue.tracks.length; i++)
@@ -60,14 +103,6 @@ function findTrackId (track) {
 		return i;
 	else
 		return undefined;
-}
-
-function hideAddTrackPane () {
-	newTrackPane.transition({y:'100%'}, 500);
-	setTimeout(function () {
-		newTrackInput.val('');
-		Vue.searchResults = null;
-	}, 500)
 }
 
 // adds track (object) to the tracklist
@@ -97,7 +132,12 @@ function sortTracks () {
 }
 
 function setCurrentPlaying (track) {
-	Vue.currentTrack = track;
+	Vue.currentTrack = null;
+	// wait half a second for transition to show
+	setTimeout(function () {
+		Vue.currentTrack = track
+	}, 500);
+
 
 	// track might be null if no song is playing
 	if (track) {
@@ -125,6 +165,7 @@ function sOn (event, callback) {
 
 $(document).on('ready', function () {
 	tracklist = $('#tracklist');
+	newTrackButton = $('#newTrackButton');
 	newTrackPane = $('#newTrackPane');
 	newTrackInput = newTrackPane.find('input');
 	nowPlaying = $('#nowPlaying');
@@ -132,7 +173,7 @@ $(document).on('ready', function () {
 	newTrackPane.click(function (e) {
 		// hide pane when clicking outside
 		if (e.target.id == 'newTrackPane')
-			hideAddTrackPane()
+			Vue.showSearchDialog = false;
 	});
 
 	sOn('connect', function () {
@@ -162,7 +203,7 @@ $(document).on('ready', function () {
 			$(e.target).addClass('clicked')
 		});
 
-		html.addClass('loaded')
+		html.addClass('loaded');
 	});
 
 });
