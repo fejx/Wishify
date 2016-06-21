@@ -109,26 +109,13 @@ function findTrackId (track) {
 function addTrack (track) {
 	if (findTrackId(track))
 		console.warn('Tried to add track ', track, ' multiple times');
-	else {
-		track.toString = function () {
-			return this.name + ' - ' + this.artists[0].name;
-		};
-
-		Vue.tracks.push(track);
-		sortTracks()
-	}
+	else
+		Vue.tracks.push(track)
 }
 
 // Updates the score of the track (object)
 function updateTrackScore (track) {
-	Vue.tracks[findTrackId(track)].score = track.score;
-	sortTracks()
-}
-
-function sortTracks () {
-	Vue.tracks.sort(function (t1, t2) {
-		return t2.score - t1.score
-	});
+	Vue.tracks[findTrackId(track)].score = track.score
 }
 
 function setCurrentPlaying (track) {
@@ -150,14 +137,15 @@ function setCurrentPlaying (track) {
 function sEmit (event, message) {
 	socket.emit(event, message);
 	if (LOG_ENABLED)
-		console.log('--> ', event, message)
+		console.log('--> ', event, ':', message)
 }
 
 function sOn (event, callback) {
 	if (LOG_ENABLED)
 		socket.on(event, function (message) {
-			callback(message);
-			console.log('<-- ', event, message)
+			if (typeof(callback) == 'function')
+				callback(message);
+			console.log('<-- ', event, ':', message)
 		});
 	else
 		socket.on(event, callback)
@@ -185,8 +173,9 @@ $(document).on('ready', function () {
 		});
 
 		// event triggered on connecting containing all current tracks on the server
-		sOn('tracks', function (tracklist) {
-			tracklist.forEach(function (track) {
+		sOn('tracks', function (tracks) {
+			Vue.tracks = [];
+			tracks.forEach(function (track) {
 				addTrack(track)
 			});
 		});
@@ -198,6 +187,8 @@ $(document).on('ready', function () {
 		sOn('now playing', function (track) {
 			setCurrentPlaying(track)
 		});
+
+		sOn('failed');
 
 		$('.voting > button > svg').click(function (e) {
 			$(e.target).addClass('clicked')

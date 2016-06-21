@@ -29,7 +29,7 @@
 
 <main>
 	<ol id="tracklist" v-show="tracks.length">
-		<li v-for="track in tracks" id="{{track.id}}" transition="zoom"
+		<li v-for="track in tracks | orderBy 'score' -1" id="{{track.id}}" transition="zoom"
 		    class="animated">
 			<img v-bind:src="track.album.images[1].url">
 			<div class="metainfo smaller">
@@ -68,7 +68,7 @@
 	</ol>
 	<span v-else id="no-tracks" class="animated" transition="fadeV"
 	      @click="attractNewTrackButton">
-		No tracks left :( Try to add a new one!
+		No songs left :( Try to add a new one!
 	</span>
 
 	<button id="newTrackButton" @click="openAddDialog" class="animated">

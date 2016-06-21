@@ -8,8 +8,8 @@ var io = require('socket.io')(http);
 var request = require('request');
 var readline = require('readline');
 
-var nodeSpotifyWebHelper = require('node-spotify-webhelper');
-var spotify = new nodeSpotifyWebHelper.SpotifyWebHelper();
+var SpotifyWebHelper = require('@jonny/spotify-web-helper');
+var helper = SpotifyWebHelper();
 
 var tracks = [];
 var users = [];
@@ -18,8 +18,8 @@ var current = null;
 var playing = false;
 var paused = false;
 var waitingForTrack = true;
-var trackSleeper;
 
+// returns index of track with trackId
 function findTrackPos (trackId) {
 	for (var i = 0; i < tracks.length; i++)
 		if (tracks[i].data.id == trackId)
@@ -28,12 +28,14 @@ function findTrackPos (trackId) {
 	return -1
 }
 
+// returns track with trackId
 function findTrack (trackId) {
 	var p = findTrackPos(trackId);
 
 	return (p == -1 ? undefined : tracks[p])
 }
 
+// returns index of element in array
 function arrayFind (array, element) {
 	for (var i = 0; i < array.length; i++)
 		if (array[i] === element)
@@ -41,6 +43,7 @@ function arrayFind (array, element) {
 	return -1
 }
 
+// returns track that is suitable for sending (internal representation of tracks contain more information that needed)
 function getSendableTrack (track) {
 	if (!track)
 		return null;
@@ -50,6 +53,7 @@ function getSendableTrack (track) {
 	return newTrack
 }
 
+// returns index of track with highest score
 function getBestRatedTrackIndex () {
 	if (tracks.length == 0)
 		return undefined;
@@ -72,51 +76,15 @@ function getBestRatedTrackIndex () {
 	return highestTrackPos
 }
 
+// plays next track from queue
 function playNextTrack () {
-	if (paused) {
-		spotify.getStatus(function (err, res) {
-			if (err)
-				console.error('Error getting Spotify status: ' + err);
-			else {
-				// calculate time left
-				var pos_ms = parseFloat(res.playing_position) * 1000;
-				var left = current.data.duration_ms - pos_ms;
-				spotify.unpause(function (err) {
-					if (err)
-						console.error('Error unpausing spotify: ' + err);
-					else {
-						clearTimeout(trackSleeper);
-						trackSleeper = setTimeout(function () {
-							playNextTrack()
-						}, left);
-						paused = false;
-						io.emit('unpaused')
-					}
-				})
-			}
-		})
-	} else if (tracks.length != 0) {
-		var idx = getBestRatedTrackIndex();
-		var track = tracks[idx];
-
-		spotify.play(tracks[idx].data.uri, function (err) {
-			if (err)
-				console.error('Spotify play error: ' + err);
-			else {
-				clearTimeout(trackSleeper);
-				trackSleeper = setTimeout(function () {
-					playNextTrack();
-				}, track.data.duration_ms);
-				io.emit('now playing', getSendableTrack(track));
-				current = track;
-				tracks.splice(idx, 1);
-				playing = true
-			}
-		})
-	} else {
+	if (tracks.length != 0)
+		helper.player.play(tracks[getBestRatedTrackIndex()].data.uri);
+	else if (current != null) {
+		// no tracks left
 		playing = false;
 		current = null;
-		io.emit('now playing', null)
+		io.emit('now playing', null);
 	}
 }
 
@@ -135,6 +103,7 @@ app.use(function (req, res, next) {
 	next()
 });
 
+// handle socket clients
 io.on('connection', function (socket) {
 	console.info(socket.id + ' joined');
 	users.push(socket.id);
@@ -282,25 +251,37 @@ io.on('connection', function (socket) {
 		}
 	});
 
-	socket.on('play', function () {
-		if (paused || !playing) {
-			if (tracks.length == 0)
-				socket.emit('error', 'playlist is empty');
-			else
-				playNextTrack()
-		}
-	});
+	// Admin commands
+
+	function checkAdmin (id) {
+		// for testing purposes, all clients are considered admins
+		return true;
+		//socket.emit('failed', 'no permission to execute this command');
+	}
 
 	socket.on('pause', function () {
-		if (playing) {
-			clearTimeout(trackSleeper);
-			spotify.pause();
+		if (checkAdmin(socket.id) && playing && !paused) {
+			helper.player.pause();
 			io.emit('paused');
 			paused = true
 		}
+	});
+
+	socket.on('unpause', function () {
+		if (checkAdmin(socket.id) && playing && paused) {
+			helper.player.play();
+			io.emit('unpaused');
+			paused = false
+		}
+	});
+
+	socket.on('next', function () {
+		if (checkAdmin(socket.id))
+			playNextTrack()
 	})
 });
 
+// Little HTTP server to send client page (located in htdocs folder)
 app.get('/*', function (req, res) {
 	if (req.params.length == 0)
 		res.params.push('index.html');
@@ -314,6 +295,57 @@ app.get('/*', function (req, res) {
 	})
 });
 
-http.listen(PORT, function () {
-	console.info('listening on *:' + PORT)
+console.info('Connecting to Spotify...');
+
+helper.player.on('error', function(err) {
+	console.error('Error with Spotify: ', JSON.stringify(err))
+});
+
+helper.player.on('ready', function() {
+	helper.player.on('play', function() {
+		console.log('event play')
+	});
+
+	helper.player.on('pause', function() {
+		if (!paused)
+			playNextTrack();
+	});
+
+	helper.player.on('end', function() {
+		console.log('event end')
+	});
+
+	helper.player.on('track-change', function (track) {
+		var id = track.track_resource.uri.substr(14);
+		var idx = findTrackPos(id);
+		console.log(id);
+
+		if (idx == -1) {
+			// unknown track, fetch info and then send playing update
+			request(
+				'https://api.spotify.com/v1/tracks/' + id,
+				function (error, response, body) {
+					current = {
+						data: JSON.parse(body),
+						upvotes: [],
+						downvotes: [],
+						owner: null
+					};
+					io.emit('now playing', getSendableTrack(current));
+					playing = true;
+					paused = false
+				}
+			)
+		} else {
+			current = tracks[idx];
+			tracks.splice(idx, 1);
+			io.emit('now playing', getSendableTrack(current));
+			playing = true;
+			paused = false
+		}
+	});
+
+	http.listen(PORT, function () {
+		console.info('listening on *:' + PORT)
+	})
 });

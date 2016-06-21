@@ -9,6 +9,7 @@
   "author": "fej",
   "license": "ISC",
   "dependencies": {
+    "@jonny/spotify-web-helper": "^1.0.4",
     "body-parser": "^1.14.2",
     "express": "^4.13.3",
     "node-spotify-webhelper": "0.0.4",
