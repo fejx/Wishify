@@ -180,7 +180,7 @@ $(document).on('ready', function () {
 			});
 		});
 
-		sOn('track change', function (track) {
+		sOn('score change', function (track) {
 			updateTrackScore(track)
 		});
 

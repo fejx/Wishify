@@ -216,7 +216,8 @@ io.on('connection', function (socket) {
 					track.upvotes.push(socket.id);
 
 					// broadcast change
-					io.emit('track change', getSendableTrack(track))
+					sTrack = getSendableTrack(track);
+					io.emit('score change', {id: sTrack.id, score: sTrack.score})
 				}
 			}
 		}
@@ -245,7 +246,8 @@ io.on('connection', function (socket) {
 					track.downvotes.push(socket.id);
 
 					// broadcast change
-					io.emit('track change', getSendableTrack(track))
+					sTrack = getSendableTrack(track);
+					io.emit('score change', {id: sTrack.id, score: sTrack.score})
 				}
 			}
 		}
