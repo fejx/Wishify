@@ -43,8 +43,20 @@
 						</span>
 					</span>
 			</div>
-			<div class="voting">
-				<button class="upvote" v-on:click="voteUp(track.id)">
+			<div class="voting" v-if="ownId === track.owner">
+				<span class="score">{{track.score}}</span>
+				<button value="remove" @click="remove(track.id)">
+					<svg viewBox="0 0 100 100" stroke="#000"
+					     fill="none" stroke-width="2">
+						<ellipse class="circle" ry="49" rx="49" cy="50"
+						         cx="50"/>
+						<line x1="25" y1="25" x2="75" y2="75"/>
+						<line x1="75" y1="25" x2="25" y2="75"/>
+					</svg>
+				</button>
+			</div>
+			<div class="voting" v-else>
+				<button class="upvote" @click.stop="voteUp(track.id)">
 					<svg viewBox="0 0 100 100" stroke="#000"
 					     fill="none" stroke-width="2">
 						<ellipse class="circle" ry="49" rx="49" cy="50"
@@ -54,7 +66,7 @@
 					</svg>
 				</button>
 				<span class="score">{{track.score}}</span>
-				<button class="downvote" v-on:click="voteDown(track.id)">
+				<button class="downvote" @click.stop="voteDown(track.id)">
 					<svg viewBox="0 0 100 100" stroke="#000"
 					     fill="none" stroke-width="2" class="rotate">
 						<ellipse class="circle" ry="49" rx="49" cy="50"
@@ -81,7 +93,7 @@
 	class="animated">
 		<div>
 			<input type="search" placeholder="search track"
-			       v-on:keyup.13="searchTrack"/>
+			       @keyup.13="searchTrack"/>
 			<svg v-show="searching" class="spinner" width="65px"
 			     height="65px" viewBox="0 0 66 66"
 			     xmlns="http://www.w3.org/2000/svg">
@@ -91,7 +103,7 @@
 			</svg>
 			<ul v-else>
 				<li v-for="track in searchResults"
-				    v-on:click="addTrack(track.id)">
+				    @click="addTrack(track.id)">
 					{{track.artists[0].name}} - {{track.name}}
 				</li>
 			</ul>

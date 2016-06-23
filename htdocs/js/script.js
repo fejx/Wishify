@@ -8,8 +8,6 @@ const SEARCH_URL =
 	'https://api.spotify.com/v1/search?q=[QUERY]&type=track';
 const LOG_ENABLED = true;
 
-var ownId;
-
 var socket = io();
 var tracklist;
 var newTrackButton;
@@ -50,9 +48,22 @@ var Vue = new Vue({
 		currentTrack: {},
 		showSearchDialog: false,
 		searching: false,
-		searchResults: []
+		searchResults: [],
+		ownId: ''
 	},
 	methods: {
+		remove: function (id) {
+			var idx = findTrackIdxById(id);
+			if (idx == undefined) {
+				console.warn('tried to remove track that does not exist');
+				return
+			}
+
+			if (Vue.tracks[idx].owner != Vue.ownId)
+				return;
+
+			sEmit('remove track', id)
+		},
 		voteUp: function (id) {
 			sEmit('vote up', id)
 		},
@@ -96,10 +107,10 @@ var Vue = new Vue({
 });
 
 // returns position of track in the list
-function findTrackIdxById (track) {
+function findTrackIdxById (id) {
 	var i = 0;
 	for (; i < Vue.tracks.length; i++)
-		if (Vue.tracks[i].id == track.id)
+		if (Vue.tracks[i].id == id)
 			break;
 	if (i < Vue.tracks.length)
 		return i;
@@ -109,15 +120,18 @@ function findTrackIdxById (track) {
 
 // adds track (object) to the tracklist
 function addTrack (track) {
-	if (findTrackIdxById(track))
+	if (findTrackIdxById(track.id))
 		console.warn('Tried to add track ', track, ' multiple times');
-	else
-		Vue.tracks.push(track)
+	else {
+		Vue.tracks.push(track);
+		if (track.owner === Vue.ownId)
+			Vue.voteUp(track.id)
+	}
 }
 
 // Updates the score of the track (object)
 function updateTrackScore (track) {
-	Vue.tracks[findTrackIdxById(track)].score = track.score
+	Vue.tracks[findTrackIdxById(track.id)].score = track.score
 }
 
 function setCurrentPlaying (track) {
@@ -130,9 +144,9 @@ function setCurrentPlaying (track) {
 
 	// track might be null if no song is playing
 	if (track) {
-		var ind = findTrackIdxById(track);
+		var ind = findTrackIdxById(track.id);
 		if (ind != undefined)
-			Vue.tracks.splice(findTrackIdxById(track), 1)
+			Vue.tracks.splice(findTrackIdxById(track.id), 1)
 	}
 }
 
@@ -170,7 +184,7 @@ $(document).on('ready', function () {
 		html.addClass('connected');
 
 		sOn('id', function (id) {
-			ownId = id;
+			Vue.ownId = id;
 		});
 
 		// event triggered when a track gets added by a user
@@ -178,9 +192,9 @@ $(document).on('ready', function () {
         	addTrack(t)
 		});
 
-		sOn('track removed', function (t) {
-			var idx = findTrackIdxById(t);
-			if (idx != -1)
+		sOn('track removed', function (id) {
+			var idx = findTrackIdxById(id);
+			if (idx != undefined)
 				Vue.tracks.splice(idx, 1)
 		});
 

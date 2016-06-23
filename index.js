@@ -187,7 +187,7 @@ io.on('connection', function (socket) {
 					socket.emit('failed', 'no permission to remove this track');
 				else {
 					tracks.splice(idx, 1);
-					io.emit('track removed', {id: getSendableTrack(track).id })
+					io.emit('track removed', getSendableTrack(track).id)
 				}
 			}
 		}
