@@ -8,6 +8,8 @@ const SEARCH_URL =
 	'https://api.spotify.com/v1/search?q=[QUERY]&type=track';
 const LOG_ENABLED = true;
 
+var ownId;
+
 var socket = io();
 var tracklist;
 var newTrackButton;
@@ -166,6 +168,10 @@ $(document).on('ready', function () {
 
 	sOn('connect', function () {
 		html.addClass('connected');
+
+		sOn('id', function (id) {
+			ownId = id;
+		});
 
 		// event triggered when a track gets added by a user
 		sOn('track added', function (t) {
