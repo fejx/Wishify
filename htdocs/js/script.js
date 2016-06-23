@@ -196,69 +196,69 @@ $(document).on('ready', function () {
 	sOn('connect', function () {
 		html.addClass('connected');
 
-		sOn('id', function (id) {
-			Vue.ownId = id;
-		});
-
-		// event triggered when a track gets added by a user
-		sOn('track added', function (t) {
-        	addTrack(t)
-		});
-
-		sOn('track removed', function (id) {
-			var idx = findTrackIdxById(id);
-			if (idx != undefined)
-				Vue.tracks.splice(idx, 1)
-		});
-
-		// event triggered on connecting containing all current tracks on the server
-		sOn('tracks', function (tracks) {
-			Vue.tracks = [];
-			tracks.forEach(function (track) {
-				addTrack(track)
-			});
-		});
-
-		// score of a track changed
-		sOn('score change', function (track) {
-			updateTrackScore(track)
-		});
-
-		// currently playing song changed
-		sOn('now playing', function (track) {
-			setCurrentPlaying(track)
-		});
-
-		// server reports an error message
-		sOn('failed', function (msg) {
-			showError(msg);
-		});
-
-		// called on every reconnect try
-		sOn('reconnecting', function (n) {
-			// max number of attempts to reconnect, may be infinite
-			var max_attempts = socket.io.reconnectionAttempts();
-			if (isFinite(max_attempts))
-				Vue.error = 'Reconnecting (try ' + n + ' of ' + max_attempts +  ')';
-			else
-				Vue.error = 'Reconnecting (try ' + n + ')';
-		});
-
-		// called when reconnect succeeded
-		sOn('reconnect', function () {
-			Vue.error = ''
-		});
-
-		// called when client gave up reconnecting
-		sOn('reconnect_failed', function () {
-			Vue.error = 'Connection to server lost :(\n Maybe try reloading?'
-		});
-
-		$('.voting > button > svg').click(function (e) {
-			$(e.target).addClass('clicked')
-		});
-
 		html.addClass('loaded');
+	});
+
+	sOn('id', function (id) {
+		Vue.ownId = id;
+	});
+
+	// event triggered when a track gets added by a user
+	sOn('track added', function (t) {
+		addTrack(t)
+	});
+
+	sOn('track removed', function (id) {
+		var idx = findTrackIdxById(id);
+		if (idx != undefined)
+			Vue.tracks.splice(idx, 1)
+	});
+
+	// event triggered on connecting containing all current tracks on the server
+	sOn('tracks', function (tracks) {
+		Vue.tracks = [];
+		tracks.forEach(function (track) {
+			addTrack(track)
+		});
+	});
+
+	// score of a track changed
+	sOn('score change', function (track) {
+		updateTrackScore(track)
+	});
+
+	// currently playing song changed
+	sOn('now playing', function (track) {
+		setCurrentPlaying(track)
+	});
+
+	// server reports an error message
+	sOn('failed', function (msg) {
+		showError(msg);
+	});
+
+	// called on every reconnect try
+	sOn('reconnecting', function (n) {
+		// max number of attempts to reconnect, may be infinite
+		var max_attempts = socket.io.reconnectionAttempts();
+		if (isFinite(max_attempts))
+			Vue.error = 'Reconnecting (try ' + n + ' of ' + max_attempts +  ')';
+		else
+			Vue.error = 'Reconnecting (try ' + n + ')';
+	});
+
+	// called when reconnect succeeded
+	sOn('reconnect', function () {
+		Vue.error = ''
+	});
+
+	// called when client gave up reconnecting
+	sOn('reconnect_failed', function () {
+		Vue.error = 'Connection to server lost :(\n Maybe try reloading?'
+	});
+
+	$('.voting > button > svg').click(function (e) {
+		$(e.target).addClass('clicked')
 	});
 
 });
