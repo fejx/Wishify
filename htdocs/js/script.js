@@ -96,7 +96,7 @@ var Vue = new Vue({
 });
 
 // returns position of track in the list
-function findTrackId (track) {
+function findTrackIdxById (track) {
 	var i = 0;
 	for (; i < Vue.tracks.length; i++)
 		if (Vue.tracks[i].id == track.id)
@@ -109,7 +109,7 @@ function findTrackId (track) {
 
 // adds track (object) to the tracklist
 function addTrack (track) {
-	if (findTrackId(track))
+	if (findTrackIdxById(track))
 		console.warn('Tried to add track ', track, ' multiple times');
 	else
 		Vue.tracks.push(track)
@@ -117,7 +117,7 @@ function addTrack (track) {
 
 // Updates the score of the track (object)
 function updateTrackScore (track) {
-	Vue.tracks[findTrackId(track)].score = track.score
+	Vue.tracks[findTrackIdxById(track)].score = track.score
 }
 
 function setCurrentPlaying (track) {
@@ -130,9 +130,9 @@ function setCurrentPlaying (track) {
 
 	// track might be null if no song is playing
 	if (track) {
-		var ind = findTrackId(track);
+		var ind = findTrackIdxById(track);
 		if (ind != undefined)
-			Vue.tracks.splice(findTrackId(track), 1)
+			Vue.tracks.splice(findTrackIdxById(track), 1)
 	}
 }
 
@@ -176,6 +176,12 @@ $(document).on('ready', function () {
 		// event triggered when a track gets added by a user
 		sOn('track added', function (t) {
         	addTrack(t)
+		});
+
+		sOn('track removed', function (t) {
+			var idx = findTrackIdxById(t);
+			if (idx != -1)
+				Vue.tracks.splice(idx, 1)
 		});
 
 		// event triggered on connecting containing all current tracks on the server
