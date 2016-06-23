@@ -303,7 +303,7 @@ helper.player.on('error', function(err) {
 
 helper.player.on('ready', function() {
 	helper.player.on('play', function() {
-		console.log('event play')
+
 	});
 
 	helper.player.on('pause', function() {
@@ -312,13 +312,12 @@ helper.player.on('ready', function() {
 	});
 
 	helper.player.on('end', function() {
-		console.log('event end')
+
 	});
 
 	helper.player.on('track-change', function (track) {
 		var id = track.track_resource.uri.substr(14);
 		var idx = findTrackPos(id);
-		console.log(id);
 
 		if (idx == -1) {
 			// unknown track, fetch info and then send playing update
