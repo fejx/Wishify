@@ -219,16 +219,39 @@ $(document).on('ready', function () {
 			});
 		});
 
+		// score of a track changed
 		sOn('score change', function (track) {
 			updateTrackScore(track)
 		});
 
+		// currently playing song changed
 		sOn('now playing', function (track) {
 			setCurrentPlaying(track)
 		});
 
+		// server reports an error message
 		sOn('failed', function (msg) {
 			showError(msg);
+		});
+
+		// called on every reconnect try
+		sOn('reconnecting', function (n) {
+			// max number of attempts to reconnect, may be infinite
+			var max_attempts = socket.io.reconnectionAttempts();
+			if (isFinite(max_attempts))
+				Vue.error = 'Reconnecting (try ' + n + ' of ' + max_attempts +  ')';
+			else
+				Vue.error = 'Reconnecting (try ' + n + ')';
+		});
+
+		// called when reconnect succeeded
+		sOn('reconnect', function () {
+			Vue.error = ''
+		});
+
+		// called when client gave up reconnecting
+		sOn('reconnect_failed', function () {
+			Vue.error = 'Connection to server lost :(\n Maybe try reloading?'
 		});
 
 		$('.voting > button > svg').click(function (e) {
