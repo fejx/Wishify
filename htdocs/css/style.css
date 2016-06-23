@@ -350,3 +350,17 @@ svg.rotate {
 	position: fixed;
 }
 
+#error {
+	position: absolute;
+	bottom: 50px;
+	background-color: #FF5722;
+	border-radius: 5px;
+	margin: 10px;
+	padding: 10px;
+	right: 0;
+	left: 0;
+	text-align: center;
+	color: white;
+	overflow-wrap: break-word;
+	box-shadow: 0 -5px 20px 0 rgba(0, 0, 0, 0.5);
+}

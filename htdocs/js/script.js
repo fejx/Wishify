@@ -40,6 +40,11 @@ Vue.transition('zoom', {
 	leaveClass: 'zoomOut'
 });
 
+Vue.transition('slideUp', {
+	enterClass: 'fadeInUp',
+	leaveClass: 'fadeOutDown'
+});
+
 //noinspection JSUnusedAssignment,JSUnusedGlobalSymbols
 var Vue = new Vue({
 	el: 'body',
@@ -49,7 +54,8 @@ var Vue = new Vue({
 		showSearchDialog: false,
 		searching: false,
 		searchResults: [],
-		ownId: ''
+		ownId: '',
+		error: ''
 	},
 	methods: {
 		remove: function (id) {
@@ -105,6 +111,13 @@ var Vue = new Vue({
 		}
 	}
 });
+
+function showError (msg) {
+	Vue.error = msg;
+	setTimeout(function () {
+		Vue.error = ''
+	}, 2000)
+}
 
 // returns position of track in the list
 function findTrackIdxById (id) {
@@ -214,7 +227,9 @@ $(document).on('ready', function () {
 			setCurrentPlaying(track)
 		});
 
-		sOn('failed');
+		sOn('failed', function (msg) {
+			showError(msg);
+		});
 
 		$('.voting > button > svg').click(function (e) {
 			$(e.target).addClass('clicked')

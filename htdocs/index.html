@@ -89,6 +89,11 @@
 			       width="35" height="45"/>
 		</svg>
 	</button>
+
+	<span id="error" v-if="error" transition="slideUp" class="animated">
+		{{ error }}
+	</span>
+
 	<div id="newTrackPane" v-show="showSearchDialog" transition="zoomV"
 	class="animated">
 		<div>
