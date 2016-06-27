@@ -15,31 +15,37 @@ var newTrackPane;
 var newTrackInput;
 var nowPlaying;
 
+//noinspection JSUnusedAssignment
 Vue.transition('slideV', {
 	enterClass: 'bounceInUp',
 	leaveClass: 'bounceOutDown'
 });
 
+//noinspection JSUnusedAssignment
 Vue.transition('zoomV', {
 	enterClass: 'zoomInUp',
 	leaveClass: 'zoomOutDown'
 });
 
+//noinspection JSUnusedAssignment
 Vue.transition('fadeV', {
 	enterClass: 'fadeInUp',
 	leaveClass: 'fadeOutDown'
 });
 
+//noinspection JSUnusedAssignment
 Vue.transition('slideH', {
 	enterClass: 'slideInLeft',
 	leaveClass: 'slideOutRight'
 });
 
+//noinspection JSUnusedAssignment
 Vue.transition('zoom', {
 	enterClass: 'zoomIn',
 	leaveClass: 'zoomOut'
 });
 
+//noinspection JSUnusedAssignment
 Vue.transition('slideUp', {
 	enterClass: 'fadeInUp',
 	leaveClass: 'fadeOutDown'
@@ -239,17 +245,22 @@ $(document).on('ready', function () {
 
 	// called on every reconnect try
 	sOn('reconnecting', function (n) {
+		Vue.currentTrack = null;
+		Vue.tracks = null;
+		html.removeClass('connected');
+
 		// max number of attempts to reconnect, may be infinite
 		var max_attempts = socket.io.reconnectionAttempts();
 		if (isFinite(max_attempts))
 			Vue.error = 'Reconnecting (try ' + n + ' of ' + max_attempts +  ')';
 		else
-			Vue.error = 'Reconnecting (try ' + n + ')';
+			Vue.error = 'Reconnecting (try ' + n + ')'
 	});
 
 	// called when reconnect succeeded
 	sOn('reconnect', function () {
-		Vue.error = ''
+		Vue.error = '';
+		html.addClass('connected')
 	});
 
 	// called when client gave up reconnecting
