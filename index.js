@@ -78,8 +78,15 @@ function getBestRatedTrackIndex () {
 
 // plays next track from queue
 function playNextTrack () {
-	if (tracks.length != 0)
-		helper.player.play(tracks[getBestRatedTrackIndex()].data.uri);
+	if (tracks.length != 0) {
+		var idx = getBestRatedTrackIndex();
+		current = tracks[idx];
+		tracks.splice(idx, 1);
+		helper.player.play(current.data.uri);
+		io.emit('now playing', getSendableTrack(current));
+		playing = true;
+		paused = false
+	}
 	else if (current != null) {
 		// no tracks left
 		playing = false;
@@ -299,51 +306,14 @@ app.get('/*', function (req, res) {
 
 console.info('Connecting to Spotify...');
 
-helper.player.on('error', function(err) {
-	console.error('Error with Spotify: ', JSON.stringify(err))
-});
-
 helper.player.on('ready', function() {
-	helper.player.on('play', function() {
-
+	helper.player.on('error', function(err) {
+		console.error('Error with Spotify: ', JSON.stringify(err))
 	});
 
 	helper.player.on('pause', function() {
 		if (!paused)
 			playNextTrack();
-	});
-
-	helper.player.on('end', function() {
-
-	});
-
-	helper.player.on('track-change', function (track) {
-		var id = track.track_resource.uri.substr(14);
-		var idx = findTrackPos(id);
-
-		if (idx == -1) {
-			// unknown track, fetch info and then send playing update
-			request(
-				'https://api.spotify.com/v1/tracks/' + id,
-				function (error, response, body) {
-					current = {
-						data: JSON.parse(body),
-						upvotes: [],
-						downvotes: [],
-						owner: null
-					};
-					io.emit('now playing', getSendableTrack(current));
-					playing = true;
-					paused = false
-				}
-			)
-		} else {
-			current = tracks[idx];
-			tracks.splice(idx, 1);
-			io.emit('now playing', getSendableTrack(current));
-			playing = true;
-			paused = false
-		}
 	});
 
 	http.listen(PORT, function () {
