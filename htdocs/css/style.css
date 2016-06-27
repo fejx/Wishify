@@ -143,6 +143,11 @@ main {
 	animation-iteration-count: 2;
 }
 
+.score {
+	width: 20px;
+	text-align: center;
+}
+
 @keyframes voteUp {
 	from {
 		fill: transparent;
