@@ -201,7 +201,8 @@ io.on('connection', function (socket) {
 									io.emit('track added', getSendableTrack(track));
 									socket.emit('owning', track.data.id)
 								}
-							}
+							} else
+								socket.emit('failed', 'track was just added by another user')
 						}
 					}.bind(this)
 				)

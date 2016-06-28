@@ -69,14 +69,14 @@ var Vue = new Vue({
 		}
 	},
 	methods: {
-		remove: function (id) {
+		removeTrack: function (id) {
 			var idx = findTrackIdxById(id);
 			if (idx == undefined) {
 				console.warn('tried to remove track that does not exist');
 				return
 			}
 
-			if (Vue.tracks[idx].owner != Vue.ownId)
+			if (!Vue.tracks[idx].owning)
 				return;
 
 			sEmit('remove track', id)

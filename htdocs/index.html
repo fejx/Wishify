@@ -44,7 +44,7 @@
 			</div>
 			<div class="voting" v-if="track.owning">
 				<span class="score">{{track.score}}</span>
-				<button value="remove" @click="remove(track.id)">
+				<button value="remove" @click="removeTrack(track.id)">
 					<svg viewBox="0 0 100 100" stroke="#000"
 					     fill="none" stroke-width="2">
 						<ellipse class="circle" ry="49" rx="49" cy="50"
