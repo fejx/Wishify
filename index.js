@@ -12,7 +12,7 @@ var SpotifyWebHelper = require('@jonny/spotify-web-helper');
 var helper = SpotifyWebHelper();
 
 var tracks = [];
-var users = [];
+var users = {};
 var current = null;
 
 var playing = false;
@@ -134,35 +134,37 @@ app.use(function (req, res, next) {
 // handle socket clients
 io.on('connection', function (socket) {
 	console.info(socket.id + ' joined');
-	users.push(socket.id);
 
-	// send own id
-	socket.emit('id', socket.id);
+	socket.on('login', function (uuid) {
+		if (uuid) {
+			uuid = checkUuid(uuid);
+			if (uuid == false) {
+				socket.disconnect();
+				return
+			}
+		} else
+			uuid = uuid();
 
-	// send current tracks
-	var tracklist = [];
-	tracks.forEach(function (t) {
-		tracklist.push(getSendableTrack(t))
+		users[uuid] = socket.id;
+		socket.uuid = uuid;
+
+		// send own id
+		socket.emit('id', uuid);
+
+		// send current tracks
+		var tracklist = [];
+		tracks.forEach(function (t) {
+			tracklist.push(getSendableTrack(t))
+		});
+		socket.emit('tracks', tracklist);
+		socket.emit('now playing', getSendableTrack(current));
 	});
-	socket.emit('tracks', tracklist);
-	socket.emit('now playing', getSendableTrack(current));
-
 
 	socket.on('disconnect', function () {
 		console.info(socket.id + ' left');
 
-		// remove all votes from this client
-		tracks.forEach(function (track) {
-			var up = arrayFind(track.upvotes, socket.id);
-			var down = arrayFind(track.downvotes, socket.id);
-			if (up != -1) track.upvotes.splice(up, 1);
-			if (down != -1) track.downvotes.splice(down, 1);
-			if (up != -1 || down != -1)
-				io.emit('track change', getSendableTrack(track))
-		});
-
-		// remove user from list
-		users.splice(arrayFind(users, socket.id), 1)
+		// remove user from user store
+		users[socket.uuid] = undefined
 	});
 
 	socket.on('add track', function (msg) {
@@ -187,7 +189,7 @@ io.on('connection', function (socket) {
 									data: JSON.parse(body),
 									upvotes: [],
 									downvotes: [],
-									owner: socket.id
+									owner: socket.uuid
 								};
 								tracks.push(track);
 								if (!playing && waitingForTrack) // player is waiting for tracks, immediately start playing
@@ -211,7 +213,7 @@ io.on('connection', function (socket) {
 				socket.emit('failed', 'track does not exist');
 			else {
 				var track = tracks[idx];
-				if (track.owner != socket.id)
+				if (track.owner != socket.uuid)
 					socket.emit('failed', 'no permission to remove this track');
 				else {
 					tracks.splice(idx, 1);
@@ -232,16 +234,16 @@ io.on('connection', function (socket) {
 				socket.emit('failed', 'track not found');
 			else {
 				// check if client already upvoted
-				if (arrayFind(track.upvotes, socket.id) != -1)
+				if (arrayFind(track.upvotes, socket.uuid) != -1)
 					socket.emit('failed', 'you already upvoted this track');
 				else {
 					// remove downvote if user has downvoted
-					var pos = arrayFind(track.downvotes, socket.id);
+					var pos = arrayFind(track.downvotes, socket.uuid);
 					if (pos != -1)
 						track.downvotes.splice(pos, 1);
 
 					// add upvote
-					track.upvotes.push(socket.id);
+					track.upvotes.push(socket.uuid);
 
 					// broadcast change
 					sTrack = getSendableTrack(track);
@@ -262,16 +264,16 @@ io.on('connection', function (socket) {
 				socket.emit('failed', 'track not found');
 			else {
 				// check if client already downvoted
-				if (arrayFind(track.downvotes, socket.id) != -1)
+				if (arrayFind(track.downvotes, socket.uuid) != -1)
 					socket.emit('failed', 'you already downvoted this track');
 				else {
 					// remove upvote if user has upvoted
-					var pos = arrayFind(track.upvotes, socket.id);
+					var pos = arrayFind(track.upvotes, socket.uuid);
 					if (pos != -1)
 						track.upvotes.splice(pos, 1);
 
 					// add downvote
-					track.downvotes.push(socket.id);
+					track.downvotes.push(socket.uuid);
 
 					// broadcast change
 					sTrack = getSendableTrack(track);
@@ -290,7 +292,7 @@ io.on('connection', function (socket) {
 	}
 
 	socket.on('pause', function () {
-		if (checkAdmin(socket.id) && playing && !paused) {
+		if (checkAdmin(socket.uuid) && playing && !paused) {
 			helper.player.pause();
 			io.emit('paused');
 			paused = true
@@ -298,7 +300,7 @@ io.on('connection', function (socket) {
 	});
 
 	socket.on('unpause', function () {
-		if (checkAdmin(socket.id) && playing && paused) {
+		if (checkAdmin(socket.uuid) && playing && paused) {
 			helper.player.play();
 			io.emit('unpaused');
 			paused = false
@@ -306,7 +308,7 @@ io.on('connection', function (socket) {
 	});
 
 	socket.on('next', function () {
-		if (checkAdmin(socket.id))
+		if (checkAdmin(socket.uuid))
 			playNextTrack()
 	})
 });
