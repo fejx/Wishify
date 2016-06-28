@@ -31,6 +31,15 @@ function s4() {
 		.substring(1);
 }
 
+function checkUuid(uuid) {
+	if (typeof(uuid) != 'string')
+		return false;
+	var res = uuid.match('([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})');
+	if (res)
+		return res[0];
+	else return false;
+}
+
 // returns index of track with trackId
 function findTrackPos (trackId) {
 	for (var i = 0; i < tracks.length; i++)
