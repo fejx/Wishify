@@ -42,7 +42,7 @@
 						</span>
 					</span>
 			</div>
-			<div class="voting" v-if="ownId === track.owner">
+			<div class="voting" v-if="track.owning">
 				<span class="score">{{track.score}}</span>
 				<button value="remove" @click="remove(track.id)">
 					<svg viewBox="0 0 100 100" stroke="#000"

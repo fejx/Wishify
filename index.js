@@ -20,7 +20,7 @@ var paused = false;
 var waitingForTrack = true;
 
 // returns new uuid, stolen from http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
-function uuid() {
+function newUuid() {
 	return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
 		s4() + '-' + s4() + s4() + s4();
 }
@@ -65,12 +65,15 @@ function arrayFind (array, element) {
 }
 
 // returns track that is suitable for sending (internal representation of tracks contain more information that needed)
-function getSendableTrack (track) {
+function getSendableTrack (track, socket) {
 	if (!track)
 		return null;
 	var newTrack = JSON.parse(JSON.stringify(track.data));
 	newTrack.score = track.upvotes.length - track.downvotes.length;
-	newTrack.owner = track.owner;
+	if (socket == null)
+		newTrack.owning = false;
+	else
+		newTrack.owning = track.owner == socket.uuid;
 	return newTrack
 }
 
@@ -143,7 +146,7 @@ io.on('connection', function (socket) {
 				return
 			}
 		} else
-			uuid = uuid();
+			uuid = newUuid();
 
 		users[uuid] = socket.id;
 		socket.uuid = uuid;
@@ -154,7 +157,7 @@ io.on('connection', function (socket) {
 		// send current tracks
 		var tracklist = [];
 		tracks.forEach(function (t) {
-			tracklist.push(getSendableTrack(t))
+			tracklist.push(getSendableTrack(t, socket))
 		});
 		socket.emit('tracks', tracklist);
 		socket.emit('now playing', getSendableTrack(current));
@@ -194,8 +197,10 @@ io.on('connection', function (socket) {
 								tracks.push(track);
 								if (!playing && waitingForTrack) // player is waiting for tracks, immediately start playing
 									playNextTrack();
-								else
-									io.emit('track added', getSendableTrack(track))
+								else {
+									io.emit('track added', getSendableTrack(track));
+									socket.emit('owning', track.data.id)
+								}
 							}
 						}
 					}.bind(this)

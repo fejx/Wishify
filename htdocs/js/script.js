@@ -60,8 +60,13 @@ var Vue = new Vue({
 		showSearchDialog: false,
 		searching: false,
 		searchResults: [],
-		ownId: '',
+		ownId: localStorage.getItem('id'),
 		error: ''
+	},
+	watch: {
+		'ownId': function (val) {
+			localStorage.setItem('id', val);
+		}
 	},
 	methods: {
 		remove: function (id) {
@@ -203,6 +208,8 @@ $(document).on('ready', function () {
 		html.addClass('connected');
 
 		html.addClass('loaded');
+
+		sEmit('login', Vue.ownId)
 	});
 
 	sOn('id', function (id) {
@@ -212,6 +219,14 @@ $(document).on('ready', function () {
 	// event triggered when a track gets added by a user
 	sOn('track added', function (t) {
 		addTrack(t)
+	});
+
+	sOn('owning', function (id) {
+		var idx = findTrackIdxById(id);
+		if (idx == undefined)
+			console.warn('got owner message from track that does not exist');
+		else
+			Vue.tracks[idx].owning = true;
 	});
 
 	sOn('track removed', function (id) {
