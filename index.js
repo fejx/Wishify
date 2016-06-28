@@ -19,6 +19,18 @@ var playing = false;
 var paused = false;
 var waitingForTrack = true;
 
+// returns new uuid, stolen from http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+function uuid() {
+	return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+		s4() + '-' + s4() + s4() + s4();
+}
+
+function s4() {
+	return Math.floor((1 + Math.random()) * 0x10000)
+		.toString(16)
+		.substring(1);
+}
+
 // returns index of track with trackId
 function findTrackPos (trackId) {
 	for (var i = 0; i < tracks.length; i++)
