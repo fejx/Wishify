@@ -28,8 +28,10 @@
 
 <main>
 	<ol id="tracklist" v-show="tracks.length">
-		<li v-for="track in tracks | orderBy 'score' -1" id="{{track.id}}" transition="zoom"
-		    class="animated">
+		<li v-for="track in tracks | orderBy 'score' -1" id="{{track.id}}"
+		    transition="zoom"
+		    class="animated"
+		    v-bind:class="{'upvoted':track.voted=='up', 'downvoted': track.voted=='down'}">
 			<img v-bind:src="track.album.images[1].url">
 			<div class="metainfo smaller">
 				<span class="title nSmaller">{{track.name}}</span><br>
@@ -49,31 +51,45 @@
 					     fill="none" stroke-width="2">
 						<ellipse class="circle" ry="49" rx="49" cy="50"
 						         cx="50"/>
+						<ellipse class="activeCircle" ry="0" rx="0" cx="50"
+						         cy="50" stroke-opacity="0" fill="black"/>
 						<line x1="25" y1="25" x2="75" y2="75"/>
 						<line x1="75" y1="25" x2="25" y2="75"/>
 					</svg>
 				</button>
 			</div>
 			<div class="voting" v-else>
-				<button class="upvote" @click.stop="voteUp(track.id)">
-					<svg viewBox="0 0 100 100" stroke="#000"
-					     fill="none" stroke-width="2">
-						<ellipse class="circle" ry="49" rx="49" cy="50"
-						         cx="50"/>
-						<path class="arrow"
-						      d="M50 15v70M25 40l25-25 25 25"/>
-					</svg>
-				</button>
-				<span class="score">{{track.score}}</span>
-				<button class="downvote" @click.stop="voteDown(track.id)">
-					<svg viewBox="0 0 100 100" stroke="#000"
-					     fill="none" stroke-width="2" class="rotate">
-						<ellipse class="circle" ry="49" rx="49" cy="50"
-						         cx="50"/>
-						<path class="arrow"
-						      d="M50 15v70M25 40l25-25 25 25"/>
-					</svg>
-				</button>
+				<svg
+					viewBox="0 0 100 100" stroke="#000" fill="none"
+					stroke-width="2">
+					<!-- Full circle round the button -->
+					<ellipse
+						class="circle" ry="49" rx="49" cy="50"
+						cx="50"/>
+
+					<!-- Half circles, are hitboxes for voting -->
+					<path
+						d="M 0 50 A 49 49 0 0 1 99 50 Z"
+						fill="transparent" stroke="none"
+						@click.stop="voteUp(track.id)"
+					/>
+					<path
+						d="M0 50 A49 49 0 0 0 99 50Z"
+						fill="transparent" stroke="none"
+						@click.stop="voteDown(track.id)"
+					/>
+
+					<!-- Flat arrows (up and down) -->
+					<path d="M30 25l20-10l20 10"/>
+					<path d="M30 75l20 10l20-10"/>
+
+					<!-- Score display -->
+					<text x="50" y="50"
+					      text-anchor="middle" alignment-baseline="middle"
+					      font-weight="normal">
+						{{track.score}}
+					</text>
+				</svg>
 			</div>
 		</li>
 	</ol>
@@ -94,7 +110,7 @@
 	</span>
 
 	<div id="newTrackPane" v-show="showSearchDialog" transition="zoomV"
-	class="animated">
+	     class="animated">
 		<div>
 			<input type="search" placeholder="search track"
 			       @keyup.13="searchTrack"/>

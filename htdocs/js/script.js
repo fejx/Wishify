@@ -146,11 +146,8 @@ function findTrackIdxById (id) {
 function addTrack (track) {
 	if (findTrackIdxById(track.id))
 		console.warn('Tried to add track ', track, ' multiple times');
-	else {
-		Vue.tracks.push(track);
-		if (track.owner === Vue.ownId)
-			Vue.voteUp(track.id)
-	}
+	else
+		Vue.tracks.push(track)
 }
 
 // Updates the score of the track (object)
@@ -225,8 +222,10 @@ $(document).on('ready', function () {
 		var idx = findTrackIdxById(id);
 		if (idx == undefined)
 			console.warn('got owner message from track that does not exist');
-		else
+		else {
 			Vue.tracks[idx].owning = true;
+			Vue.voteUp(id)
+		}
 	});
 
 	sOn('track removed', function (id) {
@@ -246,6 +245,21 @@ $(document).on('ready', function () {
 	// score of a track changed
 	sOn('score change', function (track) {
 		updateTrackScore(track)
+	});
+
+	// triggered when track has been voted by me
+	sOn('voted', function (msg) {
+		// find track in tracklist
+		var idx = findTrackIdxById(msg.id);
+		if (idx == -1) {
+			console.warn('Got voted message "', msg.vote, '" from track ', track.id, ', which does not exist');
+			return
+		}
+
+		// get actual track object
+		var track = Vue.tracks[idx];
+		// store received vote in track
+		track.voted = msg.vote
 	});
 
 	// currently playing song changed

@@ -74,6 +74,15 @@ function getSendableTrack (track, socket) {
 		newTrack.owning = false;
 	else
 		newTrack.owning = track.owner == socket.uuid;
+
+	if (socket != null) {
+		if (arrayFind(track.upvotes, socket.uuid) != -1)
+			newTrack.voted = 'up';
+		else if (arrayFind(track.downvotes, socket.uuid) != -1)
+			newTrack.voted = 'down';
+		else newTrack.voted = ''
+	}
+
 	return newTrack
 }
 
@@ -253,7 +262,8 @@ io.on('connection', function (socket) {
 
 					// broadcast change
 					sTrack = getSendableTrack(track);
-					io.emit('score change', {id: sTrack.id, score: sTrack.score})
+					io.emit('score change', {id: sTrack.id, score: sTrack.score});
+					socket.emit('voted', {vote: 'up', id: sTrack.id})
 				}
 			}
 		}
@@ -283,7 +293,8 @@ io.on('connection', function (socket) {
 
 					// broadcast change
 					sTrack = getSendableTrack(track);
-					io.emit('score change', {id: sTrack.id, score: sTrack.score})
+					io.emit('score change', {id: sTrack.id, score: sTrack.score});
+					socket.emit('voted', {vote: 'down', id: sTrack.id})
 				}
 			}
 		}
@@ -349,3 +360,7 @@ helper.player.on('ready', function() {
 		console.info('listening on *:' + PORT)
 	})
 });
+
+http.listen(PORT, function () {
+	console.info('listening on *:' + PORT)
+})

@@ -132,35 +132,6 @@ main {
 	outline-style: none;
 }
 
-.voting > button > svg {
-	height: 45px;
-}
-
-.voting > button > svg.clicked .circle {
-	animation-name: voteUp;
-	animation-duration: 0.5s;
-	animation-direction: alternate;
-	animation-iteration-count: 2;
-}
-
-.score {
-	width: 20px;
-	text-align: center;
-}
-
-@keyframes voteUp {
-	from {
-		fill: transparent;
-	}
-	to {
-		fill: gray;
-	}
-}
-
-svg.rotate {
-	transform: scale(1, -1);
-}
-
 #tracklist {
 	width: 100%;
 	margin: 0;
@@ -205,7 +176,7 @@ svg.rotate {
 .voting svg {
 	float: left;
 	width: 50px;
-	height: 50px;
+	height: 48px;
 }
 
 #newTrackButton {

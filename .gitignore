@@ -44,8 +44,6 @@ Temporary Items
 
 node_modules
 .vscode
-<<<<<<< HEAD
 .idea
-=======
-.idea
->>>>>>> origin/master
+Wishify.iml
+npm-debug.log
