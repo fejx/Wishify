@@ -360,7 +360,3 @@ helper.player.on('ready', function() {
 		console.info('listening on *:' + PORT)
 	})
 });
-
-http.listen(PORT, function () {
-	console.info('listening on *:' + PORT)
-})
