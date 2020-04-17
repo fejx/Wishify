@@ -1,3 +1,6 @@
+> **NOTE**: This project depends on an API from Spotify that does not work anymore. The repository is kept for archival purposes only.
+---
+
 # Wishify
 Wishify is a Spotify-Powered playlist where users can vote for the next song to play and add their own ones.
 
